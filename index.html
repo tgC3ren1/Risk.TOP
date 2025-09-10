@@ -20,7 +20,7 @@
     .nav{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,#0b0f17 85%,rgba(11,15,23,0));backdrop-filter:saturate(120%) blur(6px)}
     .nav-inner{display:flex;align-items:center;gap:12px;padding:10px 0}
     .logo{display:flex;align-items:center;gap:8px;font-weight:800}
-    .logo-badge{width:36px;height:36px;border-radius:10px;background:#111;border:1px solid #222;display:grid;place-items:center}
+    .logo img{height:40px;border-radius:8px}
     .btn{display:inline-flex;align-items:center;gap:8px;border:0;background:var(--accent-2);color:#fff;padding:10px 14px;border-radius:14px;font-weight:700;cursor:pointer}
     .btn-ghost{background:transparent;border:1px solid var(--stroke)}
 
@@ -73,7 +73,9 @@
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="logo" href="#"><span class="logo-badge">R</span> Risk<span style="opacity:.6;font-weight:700">.top</span></a>
+      <a class="logo" href="#">
+        <img src="Kazandiran.bot.png" alt="Risk.TOP Logo">
+      </a>
       <button class="btn btn-ghost" id="langBtn">🌐</button>
       <button class="btn" id="loginBtn">Giriş</button>
     </div>
@@ -118,7 +120,7 @@
         <strong>Ödül Talep Formu</strong>
         <button class="close" data-close>✖</button>
       </header>
-      <div class="hint" style="margin-bottom:8px">Veriler HTTPS ile iletilir. Parola toplamak önerilmez; sunucu tarafında hash'lemeden saklamayın.</div>
+      <div class="hint" style="margin-bottom:8px">Veriler HTTPS KVKK İLE KORUMA ALTINDADIR.</div>
       <form id="claimForm">
         <input name="name" placeholder="Ad" required />
         <input name="surname" placeholder="Soyad" required />
@@ -151,27 +153,28 @@
 <script>
   // ==== Config ====
   const API_URL = "YOUR_BACKEND_ENDPOINT"; // Google Apps Script / Supabase / Netlify Forms vb.
-  const PRIZES = ["10 Free Spin","20 Free Spin","Boş 🙃","Hediye Kodu","%10 Bonus","Boş 🙃","Sürpriz Kutusu","5 Free Spin"]; 
+  // İstenen ödüller: 5000 / 10000 / 30000 TL ve Boş
+  const PRIZES = ["5000 TL","10000 TL","30000 TL","Boş 🙃","5000 TL","10000 TL","30000 TL","Boş 🙃"]; 
 
   // ==== Bot Data ====
   const bots = [
-    { name:"Yapay zeka Bahis", url:"https://t.me/Yapayzekabah1sbot", tags:["YENİ","ÖNERİLEN"] },
-    { name:"Yatırımsız Deneme Bonusu Veren Siteler", url:"https://t.me/Marsbahis1casibombot", tags:["POPÜLER","ÖNERİLEN"] },
-    { name:"Çevrimsiz deneme bonusu veren siteler", url:"https://t.me/Denemebonusuveren1bot", tags:["ÇEVRİMSİZ","GÜNCEL"] },
-    { name:"Deneme kutusu bot", url:"https://t.me/DenemeKutusubot", tags:["YENİ","POPÜLER"] },
-    { name:"Deneme bonusu veren siteler", url:"https://t.me/denemekutubot", tags:["GÜNCEL","ÖNERİLEN"] },
-    { name:"En iyi deneme bonusu veren siteler", url:"https://t.me/betine_denemebonusbot", tags:["POPÜLER","ÖNERİLEN"] },
-    { name:"Güncel Deneme Bonusu Veren Siteler", url:"https://t.me/tarafbetGitBOT", tags:["GÜNCEL"] },
-    { name:"Günlük Kupon Tahmin", url:"https://t.me/mockerabi1", tags:["YENİ"] }
+    { name:"Yapay zeka Bahis", url:"https://t.me/Yapayzekabah1sbot", tags:["YENİ","ÖNERİLEN"], logo:"Telegram%20bot.png" },
+    { name:"Yatırımsız Deneme Bonusu Veren Siteler", url:"https://t.me/Marsbahis1casibombot", tags:["POPÜLER","ÖNERİLEN"], logo:"Telegram%20bot.png" },
+    { name:"Çevrimsiz deneme bonusu veren siteler", url:"https://t.me/Denemebonusuveren1bot", tags:["ÇEVRİMSİZ","GÜNCEL"], logo:"Telegram%20bot.png" },
+    { name:"Deneme kutusu bot", url:"https://t.me/DenemeKutusubot", tags:["YENİ","POPÜLER"], logo:"Telegram%20bot.png" },
+    { name:"Deneme bonusu veren siteler", url:"https://t.me/denemekutubot", tags:["GÜNCEL","ÖNERİLEN"], logo:"Telegram%20bot.png" },
+    { name:"En iyi deneme bonusu veren siteler", url:"https://t.me/betine_denemebonusbot", tags:["POPÜLER","ÖNERİLEN"], logo:"Telegram%20bot.png" },
+    { name:"Güncel Deneme Bonusu Veren Siteler", url:"https://t.me/tarafbetGitBOT", tags:["GÜNCEL"], logo:"Telegram%20bot.png" },
+    { name:"Günlük Kupon Tahmin", url:"https://t.me/mockerabi1", tags:["YENİ"], logo:"Telegram%20bot.png" }
   ];
 
-  // ==== Render Bots (isimleri görünür) ====
+  // ==== Render Bots ====
   const grid = document.getElementById('botGrid');
   bots.forEach(bot=>{
     const el = document.createElement('div');
     el.className='bot-card';
     el.innerHTML = `
-      <div class="bot-logo">🤖</div>
+      <div class="bot-logo">${bot.logo ? `<img src="${bot.logo}" alt="${bot.name}">` : '🤖'}</div>
       <div class="bot-name">${bot.name}</div>
       <a href="${bot.url}" target="_blank" rel="noopener" class="bot-cta">✈️ Botu Aç</a>
       <div class="tags">${bot.tags.map(t=>`<span class='tag'>${t}</span>`).join('')}</div>
@@ -214,31 +217,27 @@
     const target = (idx+0.5)*2*Math.PI/n; const extra = 6*Math.PI; const final = extra + (2*Math.PI - target);
     const duration = 2200; const start = performance.now();
     function frame(t){ const p=Math.min(1,(t-start)/duration); const ease = p<.5 ? 2*p*p : -1+(4-2*p)*p; currentAngle = final*ease; drawWheel(currentAngle); if(p<1) requestAnimationFrame(frame); else done(); }
-    function done(){ const prize = PRIZES[idx]; $('#wheelResult').textContent='Kazandığın: '+prize; window.__lastPrize = prize; spinning=false; }
+    function done(){
+      const prize = PRIZES[idx];
+      $('#wheelResult').textContent = (prize.includes('TL') ? 'Kazandığın: ' + prize : 'Bu sefer boş 🙃');
+      window.__lastPrize = prize;
+      // Sonuçlandıktan sonra kayıt formunu aç
+      openModal('#formModal');
+      spinning=false;
+    }
     requestAnimationFrame(frame);
   });
 
   // ==== Form submit ====
   $('#claimForm').addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const f = e.target; const fb = $('#formFeedback');
-    const payload = {
-      name: f.name.value.trim(),
-      surname: f.surname.value.trim(),
-      phone: f.phone.value.trim(),
-      email: f.email.value.trim(),
-      prize: window.__lastPrize || '—',
-      consent: $('#consent').checked
-    };
-    fb.textContent = 'Gönderiliyor…';
-    try{
-      const res = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    e.preventDefault(); const f=e.target; const fb=$('#formFeedback');
+    const payload = { name:f.name.value.trim(), surname:f.surname.value.trim(), phone:f.phone.value.trim(), email:f.email.value.trim(), prize:window.__lastPrize||'—', consent:$('#consent').checked };
+    fb.textContent='Gönderiliyor…';
+    try{ const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       const json = await res.json().catch(()=>({ok:false}));
-      if(json.ok){ fb.textContent = 'Talebin alındı. Teşekkürler!'; f.reset(); }
-      else{ fb.textContent = 'Hata: Sunucu yanıtı başarısız.'; }
-    }catch(err){
-      fb.textContent = 'Ağ hatası. Daha sonra tekrar dene.';
-    }
+      if(json.ok){ fb.textContent='Talebin alındı. Teşekkürler!'; f.reset(); }
+      else{ fb.textContent='Hata: Sunucu yanıtı başarısız.' }
+    }catch(err){ fb.textContent='Ağ hatası. Daha sonra tekrar dene.' }
   });
 </script>
 </body>
