@@ -74,7 +74,7 @@
   <nav class="nav">
     <div class="container nav-inner">
       <a class="logo" href="#">
-        <img src="Kazandiran.bot.png" alt="Risk.TOP Logo">
+        <img src="Kazandıran.bot.png" alt="Risk.TOP Logo" onerror="this.replaceWith(document.createTextNode('Risk.TOP'))">
       </a>
       <button class="btn btn-ghost" id="langBtn">🌐</button>
       <button class="btn" id="loginBtn">Giriş</button>
@@ -120,7 +120,7 @@
         <strong>Ödül Talep Formu</strong>
         <button class="close" data-close>✖</button>
       </header>
-      <div class="hint" style="margin-bottom:8px">Veriler HTTPS KVKK İLE KORUMA ALTINDADIR.</div>
+      <div class="hint" style="margin-bottom:8px">Veriler HTTPS ile iletilir. Parola toplamak önerilmez; sunucu tarafında hash'lemeden saklamayın.</div>
       <form id="claimForm">
         <input name="name" placeholder="Ad" required />
         <input name="surname" placeholder="Soyad" required />
@@ -152,9 +152,9 @@
 
 <script>
   // ==== Config ====
-  const API_URL = "YOUR_BACKEND_ENDPOINT"; // Google Apps Script / Supabase / Netlify Forms vb.
-  // İstenen ödüller: 5000 / 10000 / 30000 TL ve Boş
-  const PRIZES = ["5000 TL","10000 TL","30000 TL","Boş 🙃","5000 TL","10000 TL","30000 TL","Boş 🙃"]; 
+  const API_URL = "https://script.google.com/macros/s/AKfycbzKGKebhH9hrC61gP-NFMNoCJDQCrvJnnEpFC8XQiwNZitf2JElI3hs6PiqdHqTIv0gcQ/exec";
+  // Ödüller: 5000 / 10000 / 30000 TL ve Boş
+  const PRIZES = ["5000 TL","10000 TL","30000 TL","Boş","5000 TL","10000 TL","30000 TL","Boş"];
 
   // ==== Bot Data ====
   const bots = [
@@ -210,6 +210,7 @@
   }
   drawWheel();
 
+  // ==== Spin ====
   let spinning=false; let currentAngle=0;
   $('#spinBtn').addEventListener('click', ()=>{
     if(spinning) return; spinning=true; $('#wheelResult').textContent='Çark dönüyor…';
@@ -217,14 +218,7 @@
     const target = (idx+0.5)*2*Math.PI/n; const extra = 6*Math.PI; const final = extra + (2*Math.PI - target);
     const duration = 2200; const start = performance.now();
     function frame(t){ const p=Math.min(1,(t-start)/duration); const ease = p<.5 ? 2*p*p : -1+(4-2*p)*p; currentAngle = final*ease; drawWheel(currentAngle); if(p<1) requestAnimationFrame(frame); else done(); }
-    function done(){
-      const prize = PRIZES[idx];
-      $('#wheelResult').textContent = (prize.includes('TL') ? 'Kazandığın: ' + prize : 'Bu sefer boş 🙃');
-      window.__lastPrize = prize;
-      // Sonuçlandıktan sonra kayıt formunu aç
-      openModal('#formModal');
-      spinning=false;
-    }
+    function done(){ const prize = PRIZES[idx]; $('#wheelResult').textContent = (prize.includes('TL') ? 'Kazandığın: ' + prize : 'Bu sefer boş 🙃'); window.__lastPrize = prize; openModal('#formModal'); spinning=false; }
     requestAnimationFrame(frame);
   });
 
@@ -233,11 +227,8 @@
     e.preventDefault(); const f=e.target; const fb=$('#formFeedback');
     const payload = { name:f.name.value.trim(), surname:f.surname.value.trim(), phone:f.phone.value.trim(), email:f.email.value.trim(), prize:window.__lastPrize||'—', consent:$('#consent').checked };
     fb.textContent='Gönderiliyor…';
-    try{ const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      const json = await res.json().catch(()=>({ok:false}));
-      if(json.ok){ fb.textContent='Talebin alındı. Teşekkürler!'; f.reset(); }
-      else{ fb.textContent='Hata: Sunucu yanıtı başarısız.' }
-    }catch(err){ fb.textContent='Ağ hatası. Daha sonra tekrar dene.' }
+    try{ const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const json=await res.json().catch(()=>({ok:false})); if(json.ok){ fb.textContent='Talebin alındı. Teşekkürler!'; f.reset(); } else { fb.textContent='Hata: Sunucu yanıtı başarısız.'; } }
+    catch(err){ fb.textContent='Ağ hatası. Daha sonra tekrar dene.'; }
   });
 </script>
 </body>
