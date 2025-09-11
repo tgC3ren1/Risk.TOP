@@ -9,9 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#0b0f17;--panel:#111827;--panel-2:#0f1626;--muted:#9ca3af;--card:#0f1320;--stroke:#1f2937;--accent:#10b981;--accent-2:#6366f1;--warning:#f59e0b;--danger:#ef4444}
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    :root{--bg:#0b0f17;--panel:#111827;--panel-2:#0f1626;--muted:#9ca3af;--stroke:#1f2937;--accent:#10b981;--accent-2:#6366f1}
+    *{box-sizing:border-box} html,body{height:100%}
     body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
     a{color:inherit;text-decoration:none}
     .container{max-width:1120px;margin:0 auto;padding:0 16px}
@@ -19,7 +18,7 @@
     /* NAV */
     .nav{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,#0b0f17 85%,rgba(11,15,23,0));backdrop-filter:saturate(120%) blur(6px)}
     .nav-inner{display:flex;align-items:center;gap:12px;padding:10px 0}
-    .logo{display:flex;align-items:center;gap:8px;font-weight:800}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800}
     .logo img{height:40px;border-radius:8px}
     .btn{display:inline-flex;align-items:center;gap:8px;border:0;background:var(--accent-2);color:#fff;padding:10px 14px;border-radius:14px;font-weight:700;cursor:pointer}
     .btn-ghost{background:transparent;border:1px solid var(--stroke)}
@@ -31,7 +30,7 @@
 
     /* PROMOS */
     .promos{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-    .promo{background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:16px;min-height:148px;position:relative;overflow:hidden}
+    .promo{background:#0f1626;border:1px solid var(--stroke);border-radius:16px;padding:16px;min-height:148px;position:relative;overflow:hidden}
     .promo h3{margin:0 0 6px}
     .promo .badge{position:absolute;top:12px;right:12px;left:auto;background:#111;border:1px solid #333;padding:6px 10px;border-radius:999px;font-size:12px;color:#cbd5e1;z-index:2}
     .cta{position:absolute;bottom:14px;right:14px}
@@ -39,7 +38,7 @@
 
     /* BOT GRID */
     .bot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .bot-card{background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+    .bot-card{background:#0f1626;border:1px solid var(--stroke);border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
     .bot-logo{width:48px;height:48px;border-radius:12px;background:#0b1220;border:1px solid #253048;display:grid;place-items:center;overflow:hidden}
     .bot-logo img{max-width:100%;max-height:100%;object-fit:contain}
     .bot-name{font-size:14px;color:#e5e7eb;font-weight:700}
@@ -49,11 +48,11 @@
 
     /* MODALS */
     .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
-    .modal{width:min(560px,100%);background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:18px}
+    .modal{width:min(560px,100%);background:#0f1626;border:1px solid var(--stroke);border-radius:16px;padding:18px}
     .modal header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
     .close{background:transparent;border:1px solid var(--stroke);border-radius:10px;color:#cbd5e1;padding:6px 10px;cursor:pointer}
     form{display:grid;gap:10px}
-    input{padding:12px;border-radius:12px;border:1px solid var(--stroke);background:var(--panel-2);color:#fff;outline:none}
+    input{padding:12px;border-radius:12px;border:1px solid var(--stroke);background:#0b1220;color:#fff;outline:none}
 
     /* WHEEL */
     #wheelCanvas{width:100%;height:auto;max-width:360px;display:block;margin:0 auto}
@@ -82,7 +81,7 @@
   </nav>
 
   <div class="container">
-    <!-- PROMOS ROW -->
+    <!-- PROMOS -->
     <section>
       <div class="promos">
         <article class="promo" style="background:linear-gradient(135deg,#f59e0b33,#f59e0b11)">
@@ -183,8 +182,8 @@
   });
 
   // ==== Modal Helpers ====
-  const $ = s=>document.querySelector(s); const $$ = s=>document.querySelectorAll(s);
-  function openModal(id){const m=$(id); if(!m) return; m.style.display='flex';}
+  const $ = s=>document.querySelector(s), $$ = s=>document.querySelectorAll(s);
+  function openModal(id){const m=$(id); if(m) m.style.display='flex';}
   function closeModal(el){el.closest('.modal-backdrop').style.display='none';}
   $$('[data-open-form]').forEach(b=>b.addEventListener('click',()=>openModal('#formModal')));
   $$('[data-open-wheel]').forEach(b=>b.addEventListener('click',()=>openModal('#wheelModal')));
@@ -222,13 +221,30 @@
     requestAnimationFrame(frame);
   });
 
-  // ==== Form submit ====
-  $('#claimForm').addEventListener('submit', async (e)=>{
-    e.preventDefault(); const f=e.target; const fb=$('#formFeedback');
-    const payload = { name:f.name.value.trim(), surname:f.surname.value.trim(), phone:f.phone.value.trim(), email:f.email.value.trim(), prize:window.__lastPrize||'—', consent:$('#consent').checked };
+  // ==== Form submit (CORS-safe) ====
+  document.getElementById('claimForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const f=e.target; const fb=document.getElementById('formFeedback');
+    const payload = {
+      name:f.name.value.trim(),
+      surname:f.surname.value.trim(),
+      phone:f.phone.value.trim(),
+      email:f.email.value.trim(),
+      prize:window.__lastPrize || '—',
+      consent:document.getElementById('consent').checked
+    };
     fb.textContent='Gönderiliyor…';
-    try{ const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const json=await res.json().catch(()=>({ok:false})); if(json.ok){ fb.textContent='Talebin alındı. Teşekkürler!'; f.reset(); } else { fb.textContent='Hata: Sunucu yanıtı başarısız.'; } }
-    catch(err){ fb.textContent='Ağ hatası. Daha sonra tekrar dene.'; }
+    try{
+      await fetch(API_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // preflight yok
+        body: JSON.stringify(payload)
+      });
+      fb.textContent='Talebin alındı. Teşekkürler!';
+      f.reset();
+    }catch(err){
+      fb.textContent='Ağ hatası. Daha sonra tekrar dene.';
+    }
   });
 </script>
 </body>
